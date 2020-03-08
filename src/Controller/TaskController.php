@@ -14,35 +14,26 @@ class TaskController extends AbstractController
      */
     public function index(EntityManagerInterface $entityManager, Request $request)
     {
-        $newTask = new Task();
+        $task = new task();
+        $form = $this->createForm(TaskType::class, $task);
 
-        $form = $this->createForm(TaskType::class, $newTask);
         $form->handleRequest($request);
-    
-        $TaskRepository = $this->getDoctrine()
-                        ->getRepository(Task::class);
 
         if ($form->isSubmitted() && $form->isValid()){
+            $task = $form->getData();
 
-            $task = $TaskRepository->find($request->request->get('UserId'));
-            
-            $newTask = $form->getData();
-            $newTask->setTaskId($task);
-            $newTask->setCreatedAt(new \DateTime());
-
-            $entityManager->persist($newTask);
+            $entityManager->persist($task);
             $entityManager->flush();
 
-            return $this->redirectToRoute('home');
-        }
-
-        $task = $this->$TaskRepository = $this->getDoctrine()
-        ->getRepository(Task::class)->findAll();
-        $user = $UserRepository->findAll();
-
+            return $this->redirectToRoute('task');
+        };
+        $taskRepository = $this->getDoctrine()
+        ->getRepository(task::class)
+        ->findAll();
         return $this->render('task/index.html.twig', [
-            'task' => $task,
-            'TaskForm' => $form->createView(),
+        'task' => $taskRepository,
+        'formulaireTask' => $form->createView(),
         ]);
     }
 }
+        
